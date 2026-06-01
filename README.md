@@ -6,7 +6,7 @@
 
 ## ✨ Overview
 
-📚 This project is a full-stack AI chatbot that enables **knowledge-based question answering** over custom documents.
+📚 Full-stack AI chatbot for knowledge-based question answering over custom documents.
 
 It combines:
 
@@ -21,113 +21,142 @@ It combines:
 
 ## 🧠 Key Features
 
-### 🔍 Advanced Retrieval
+### 🔍 Retrieval System
 
 - 🧊 Vector Search (Milvus)
-- 🔤 BM25 Sparse Retrieval
-- 🔗 Hybrid Retrieval
+- 🔤 BM25 Search
+- 🔗 Hybrid Fusion
 - 🧮 Reciprocal Rank Fusion (RRF)
-- 🎯 BGE Cross-Encoder Reranker
+- 🎯 BGE Reranker
 
 ---
 
 ### 📚 Knowledge Base
 
-- 📤 Upload documents via web UI
+- 📤 Document upload via web UI
 - 🗂 Multi-knowledge-base support
-- ✂️ Text chunking pipeline
+- ✂️ Chunking pipeline
 - 🧬 Embedding generation
-- 💾 Persistent storage (PostgreSQL)
+- 💾 PostgreSQL storage
 
 ---
 
-### 💬 Conversational AI
+### 💬 Chat System
 
 - 🧠 Multi-turn conversation memory
 - 🔄 Context-aware responses
-- ⚙️ RAG / Chat mode routing
+- ⚙️ RAG / Chat routing
 - 📌 Source tracking
 
 ---
 
-### 🎨 Frontend (ChatGPT Style)
+### 🎨 Frontend
 
-- 💬 ChatGPT-like interface
-- 📎 Knowledge base upload sidebar
-- 🧭 Left/right message bubbles
-- ⚡ Real-time interaction
-- 🎯 Clean & minimal UI
+- 💬 ChatGPT-style UI
+- 📎 Upload sidebar
+- 🧭 Message bubbles
+- ⚡ Real-time chat
 
 ---
 
 ## 🏗 System Architecture
 
-```text
-User Query
-   ↓
-🔍 Hybrid Retrieval
-   ├── 🧊 Milvus Vector Search
-   ├── 🔤 BM25 Search
-   └── 🔗 RRF Fusion
-   ↓
-🎯 BGE Reranker
-   ↓
-📦 Context Builder
-   ↓
-🧠 LLM Generation
-   ↓
-💬 Final Answer
+User Query  
+↓  
+Hybrid Retrieval  
+- Milvus Vector Search  
+- BM25 Search  
+- RRF Fusion  
+↓  
+BGE Reranker  
+↓  
+Context Builder  
+↓  
+LLM Generation  
+↓  
+Final Answer  
 
-⚙️ How It Works
-📥 Step 1: Document Ingestion
-Upload file 📤
-Chunk text ✂️
-Generate embeddings 🧬
-Store in Milvus + PostgreSQL
+---
 
-❓ Step 2: Query Process
-User asks question 💬
-Generate query embedding 🧠
-Hybrid retrieval 🔍
-Reranking 🎯
-Build context 📦
-LLM generates answer ⚡
-Save conversation memory
+## 🛠 Tech Stack
 
-🚀 Quick Start
-📦 Clone Repository
-git clone https://github.com/yourname/enterprise-rag-chatbot.git
-cd enterprise-rag-chatbot
-🖥 Backend Setup
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+### Backend
 
-📍 Backend:
+- FastAPI  
+- LangChain (light usage)  
+- PostgreSQL  
+- SQLAlchemy  
+
+### Retrieval
+
+- Milvus  
+- BM25  
+- Hybrid Search  
+- RRF Fusion  
+
+### Embedding / Rerank
+
+- BGE Embedding  
+- BGE Reranker  
+- SentenceTransformers  
+
+## 🚀 Quick Start
+
+### Backend
+
+1. Create virtual environment:
+   python -m venv .venv
+
+2. Activate environment:
+   source .venv/bin/activate
+
+3. Install dependencies:
+   pip install -r requirements.txt
+
+4. Run server:
+   uvicorn app.main:app --reload
+
+Backend will run at:
 http://localhost:8000
 
-🌐 Frontend Setup
-cd frontend
-npm install
-npm run dev
+---
 
-📍 Frontend:
+### Frontend
+
+1. Enter frontend directory:
+   cd frontend
+
+2. Install dependencies:
+   npm install
+
+3. Start development server:
+   npm run dev
+
+Frontend will run at:
 http://localhost:5173
 
-💡 Why This Project?
+---
 
-This project demonstrates:
+## 📌 Status
 
-🧠 LLM system design
-🔍 Retrieval-Augmented Generation
-🏗 Backend architecture design
-💬 Full-stack AI engineering
-⚙️ Production-level RAG pipeline
-📜 License
+✔ Hybrid Retrieval  
+✔ RRF Fusion  
+✔ BGE Reranker  
+✔ Conversation Memory  
+✔ Knowledge Upload  
+✔ Chat UI  
 
-MIT License © 2026
+---
 
-⭐ Support
+## 💡 Why this project?
 
-If you like this project, consider giving it a ⭐ on GitHub!
+- LLM System Design  
+- RAG Architecture  
+- Full-stack AI Engineering  
+- Production-level Retrieval System  
+
+---
+
+## ⭐ Support
+
+If you like this project, please give it a star ⭐
