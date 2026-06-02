@@ -7,7 +7,7 @@ docs = [
     "Milvus is a vector database for similarity search.",
     "RAG combines retrieval and generation using LLMs.",
     "BGE is a strong embedding model from BAAI.",
-    "LangChain is a framework for building LLM applications."
+    "LangChain is a framework for building LLM applications.Test"
 ]
 
 
