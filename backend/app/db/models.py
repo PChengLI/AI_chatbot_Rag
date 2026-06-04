@@ -15,7 +15,6 @@ from datetime import datetime
 class Base(DeclarativeBase):
     pass
 
-
 # =========================
 # User
 # =========================

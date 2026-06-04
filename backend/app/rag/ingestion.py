@@ -1,5 +1,13 @@
+import os
+
 from langchain.text_splitter import (
     RecursiveCharacterTextSplitter
+)
+
+from langchain_community.document_loaders import (
+    PyPDFLoader,
+    TextLoader,
+    UnstructuredWordDocumentLoader
 )
 
 from app.rag.embedding import EmbeddingModel
@@ -12,43 +20,74 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 
 
-def ingest_file(
-    file_path: str,
-    kb_name: str = "default"
-):
+def load_documents(file_path: str):
 
-    with open(
-        file_path,
-        "r",
-        encoding="utf-8"
-    ) as f:
+    ext = os.path.splitext(file_path)[1].lower()
 
-        text = f.read()
+    if ext == ".pdf":
 
-    chunks = text_splitter.split_text(text)
+        loader = PyPDFLoader(file_path)
 
-    embeddings = (
-        EmbeddingModel.embed_documents(chunks)
-    )
+    elif ext == ".docx":
 
-    docs = []
+        loader = UnstructuredWordDocumentLoader(
+            file_path
+        )
 
-    for chunk, embedding in zip(
-        chunks,
-        embeddings
-    ):
+    elif ext in [".txt", ".md"]:
 
-        docs.append({
+        loader = TextLoader(
+            file_path=file_path,
+            encoding="utf-8",
+            autodetect_encoding=True
+        )
 
-            "content": chunk,
+    else:
 
+        raise ValueError(
+            f"Unsupported file type: {ext}"
+        )
+
+    return loader.load()
+
+
+def ingest_file(file_path: str, kb_name: str = "default"):
+
+    documents = load_documents(file_path)
+
+    chunks = text_splitter.split_documents(documents)
+
+    texts = [
+        doc.page_content
+        for doc in chunks
+        if doc.page_content.strip()
+    ]
+
+    if not texts:
+        raise ValueError("No valid text extracted from document")
+
+    embeddings = EmbeddingModel.embed_documents(texts)
+
+    vectors = []
+    payloads = []
+
+    for doc, embedding in zip(chunks, embeddings):
+
+        vectors.append(embedding)
+
+        payloads.append({
+            "text": doc.page_content,   # ⚠️ 必须叫 text（你的 MilvusClient 用的）
             "source": file_path,
-
-            "embedding": embedding
+            "kb_name": kb_name
         })
 
-    milvus_client.insert(docs)
+    milvus_client.insert(
+        vectors=vectors,
+        payloads=payloads
+    )
 
     return {
-        "chunks": len(chunks)
+        "success": True,
+        "chunks": len(vectors),
+        "filename": os.path.basename(file_path)
     }

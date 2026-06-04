@@ -1,22 +1,20 @@
+import sys
+
+import numpy
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.chat import router as chat_router
-from app.api.upload import router as upload_router
-from app.api.kb import router as kb_router
 from app.api.auth import router as auth_router
+from app.api.chat import router as chat_router
 from app.api.health import router as health_router
-
+from app.api.kb import router as kb_router
+from app.api.upload import router as upload_router
 from app.core.config import settings
-
-import sys
-import numpy
+from app.db.models import Base
+from app.db.postgres import engine
 
 print("PYTHON PATH:", sys.executable)
 print("NUMPY VERSION:", numpy.__version__)
-from app.services.embedding_service import embedding_service
-
-
 
 app = FastAPI(
 

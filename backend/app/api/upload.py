@@ -2,11 +2,11 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.rag.ingestion import ingest_file
 import os
 import uuid
+import traceback
 
 router = APIRouter()
 
 UPLOAD_DIR = "uploads"
-
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
@@ -23,12 +23,12 @@ def upload_document(
         ".md"
     ]
 
-    ext = os.path.splitext(file.filename)[1]
+    ext = os.path.splitext(file.filename)[1].lower()
 
     if ext not in allowed_types:
         raise HTTPException(
             status_code=400,
-            detail="Unsupported file type"
+            detail=f"Unsupported file type: {ext}"
         )
 
     file_id = str(uuid.uuid4())
@@ -38,21 +38,56 @@ def upload_document(
         f"{file_id}_{file.filename}"
     )
 
+    try:
 
+        print(f"[UPLOAD] filename={file.filename}")
+        print(f"[UPLOAD] save_path={save_path}")
+        print(f"[UPLOAD] kb_name={kb_name}")
 
-    with open(save_path, "wb") as f:
-        print(len(file.read()))
-        f.write(file.read())
+        # 读取文件
+        content = file.file.read()
 
-    result = ingest_file(
-        file_path=save_path,
-        kb_name=kb_name
-    )
+        if not content:
+            raise HTTPException(
+                status_code=400,
+                detail="Uploaded file is empty"
+            )
 
-    return {
-        "success": True,
-        "file_id": file_id,
-        "filename": file.filename,
-        "chunks": result["chunks"],
-        "kb_name": kb_name
-    }
+        print(f"[UPLOAD] file_size={len(content)} bytes")
+
+        # 保存文件
+        with open(save_path, "wb") as f:
+            f.write(content)
+
+        print("[UPLOAD] file saved successfully")
+
+        # RAG入库
+        result = ingest_file(
+            file_path=save_path,
+            kb_name=kb_name
+        )
+
+        print(f"[UPLOAD] ingest result={result}")
+
+        return {
+            "success": True,
+            "file_id": file_id,
+            "filename": file.filename,
+            "chunks": result.get("chunks", 0),
+            "kb_name": kb_name
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+
+        print("\n========== UPLOAD ERROR ==========")
+        print(str(e))
+        traceback.print_exc()
+        print("==================================\n")
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Upload failed: {str(e)}"
+        )

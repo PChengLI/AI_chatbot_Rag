@@ -100,3 +100,5 @@ Pillow==11.2.1
 pytest==8.3.5
 black==25.1.0
 isort==6.0.1
+rank_bm25==0.2.2
+asyncpg==0.31.0

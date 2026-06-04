@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import (
 
 from app.core.config import settings
 
-
 DATABASE_URL = (
 
     f"postgresql+asyncpg://"
@@ -19,10 +18,7 @@ DATABASE_URL = (
 
     f"{settings.POSTGRES_DB}"
 )
-
 engine = create_async_engine(
-
     DATABASE_URL,
-
     echo=True
 )
